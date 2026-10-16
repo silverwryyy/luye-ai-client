@@ -85,5 +85,5 @@
 
 代码版权归作者所有。
 
-仓库内**不附带**任何第三方组件（PPT Master / OfficeCLI / Skills），
+虽然支持后文列出的项目适配，但仓库内**不附带**任何第三方组件（PPT Master / OfficeCLI / Skills），
 它们各自遵循自己的开源许可证，使用前请自行阅读。
