@@ -1,0 +1,13 @@
+# 路夜 (Luye v1.0) 运行依赖
+# 由 装我.bat 自动安装，也可手动：.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+requests
+psutil
+python-dotenv
+openai
+winotify
+pillow
+numpy
+
+# write_word 工具写 .docx 需要（读 docx 只用标准库，无需它）
+python-docx
