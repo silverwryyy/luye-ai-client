@@ -8,12 +8,12 @@
 
 ## 快速开始（三步）
 
-1. 双击 **`装我.bat`**
-   - 电脑上没有 Python？它会自己帮你装一个（winget → 官方安装包，两级兜底）
-   - 然后建 `.venv`、装依赖（走清华镜像）、检查 `.env`
-2. 用记事本打开 **`example.txt`**，把 `填自己申请的对应api` 换成你自己的 Key，并把文件名改为.env
+1.用记事本打开 **`example.txt`**，把 `填自己申请的对应api` 换成你自己的 Key，并把文件名改为.env
    - DeepSeek：https://platform.deepseek.com/
    - Tavily：https://tavily.com/
+2. 双击 **`装我.bat`**
+   - 电脑上没有 Python？它会自己帮你装一个（winget → 官方安装包，两级兜底）
+   - 然后建 `.venv`、装依赖（走清华镜像）、检查 `.env`
 3. 双击 **`启动路夜.bat`**
 
 启动脚本会先自检（虚拟环境在不在、依赖能不能 import、Key 填没填），有问题会在控制台里直说，不会只闪一下就没了。
