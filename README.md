@@ -1,89 +1,131 @@
-# 路夜 (Luye) v1.0
+# 路夜 Luye · v1.1
 
-一只住在桌面角落的赛博小弟。双击悬浮小人开窗，能聊天、联网搜索、读写本地文件。
+一个住在 Windows 桌面上的 AI 助手：小窗常驻、能聊天、会主动搭话，崩了还会自己留证据。
 
-纯 Python + tkinter 写成，界面不依赖任何第三方 GUI 框架，所有文件都在本文件夹内活动，
-不往系统别处乱写。
+> 不是「一键即用」的成品软件，是一个文件夹式的小工具。
 
 ---
 
-## 一、三分钟跑起来
+## 快速开始（三步）
 
-| 步骤 | 操作 |
+1. 双击 **`装我.bat`**
+   - 电脑上没有 Python？它会自己帮你装一个（winget → 官方安装包，两级兜底）
+   - 然后建 `.venv`、装依赖（走清华镜像）、检查 `.env`
+2. 用记事本打开 **`.env`**，把 `填自己申请的对应api` 换成你自己的 Key
+   - DeepSeek：https://platform.deepseek.com/
+   - Tavily：https://tavily.com/
+3. 双击 **`启动路夜.bat`**
+
+启动脚本会先自检（虚拟环境在不在、依赖能不能 import、Key 填没填），有问题会在控制台里直说，不会只闪一下就没了。
+
+**环境要求**：Windows 10/11 64 位。Python 3.10+——没装也行，`装我.bat` 会处理。
+
+---
+
+## 依赖说明
+
+`requirements.txt` 里 **所有版本都钉死了**（v1.1 起）。克隆下来直接
+`pip install -r requirements.txt`，装出来的环境和作者一致，不会「随缘装到哪个版本」。
+
+| 包 | 钉死版本 |
 |---|---|
-| 1 | 双击 **「装我.bat」** —— 自动准备 Python、创建 `.venv`、安装依赖（首次约 1~3 分钟） |
-| 2 | 用记事本打开 **`.env`**，把里面两个 Key 换成自己申请的 |
-| 3 | 双击 **「启动路夜.bat」** —— 桌面右下角出现小人，双击它开聊天窗 |
+| requests | 2.34.2 |
+| psutil | 7.2.2 |
+| python-dotenv | 1.2.4 |
+| openai | 3.28.0 |
+| winotify | 1.1.0 |
+| pillow | 12.3.0 |
+| python-docx | 1.2.0 |
+| numpy（仅 demo 用） | 2.5.4 |
 
-### 你需要自己准备的 Key
+`numpy` 单独列在文件末尾并注明用途：**只有跑 `image_shape_demo.py` 才需要**，主程序不用。
 
-| 变量 | 用途 | 申请地址 |
+---
+
+## 崩了怎么办
+
+v1.1 起自带崩溃遥测，出问题时先看包目录下这几个文件（都在根目录）：
+
+| 文件 | 什么时候有 | 看它干嘛 |
 |---|---|---|
-| `DEEPSEEK_API_KEY` | 对话大脑 | https://platform.deepseek.com/ |
-| `TAVILY_API_KEY` | 联网搜索 | https://tavily.com/ |
+| `launch_trace.log` | 每次启动 | 启动走到哪一步停的，卡在依赖还是 Key |
+| `runtime_heartbeat.txt` | 运行期间不断刷新 | 里面是最后一次存活的时间戳，能算出「死于几点几分」 |
+| `crash_trace.log` | 硬崩（连 Python 异常都没抛）时 | faulthandler 刷出的各线程调用栈 |
+| `error.log` / `save_error.log` | 有可捕获异常 / 记忆存盘失败 | 普通报错的完整 traceback |
+| `launch_error.log` | 启动自检失败 | 依赖导入失败的原始输出 |
 
-> 没填 Key 也能启动，但聊不了天。本包自带的 `.env` 是**占位模板，不含任何真密钥**。
-
-### 本机没装 Python 怎么办
-
-「装我.bat」会自己想办法，全程不用手点：
-
-1. 先看本机有没有 `py -3` / `python`；
-2. 没有就试 `winget`（不需要管理员权限）；
-3. 再没有就下载官方 Python 3.12 安装包**静默安装**；
-4. 都失败才提示你手动装，并给出图文步骤。
+提 issue 时把上面这几份一起贴上，比自己复述「它突然就没了」有用得多。
 
 ---
 
-## 二、可选外部组件（本包**不带**，需要请自装）
+## 目录里都是啥
 
-路夜可以调用外部工具干重活，但这些组件体积大、各自授权独立，**没有打进本包**。
-想用就自己装好，再放进 `tools\` 下对应目录，并在 `desktop_bug.py` 的
-`_RUN_ALLOW_FIRST` 白名单里登记它的命令名（否则每次调用都会弹确认框）。
-
-| 组件 | 干什么 | 怎么自装 |
-|---|---|---|
-| **PPT Master** | 生成 PPTX | 去它自己的仓库，按它的 README 安装，放到 `ppt-master\` 下 |
-| **OfficeCLI** | docx / xlsx / pptx 的细读、元素级写、OpenXML 校验、渲染自查 | 官方发布页下载**单文件 exe**，丢进 `tools\officecli\` |
-| **Skills 库** | 一堆工程技能（TDD、code-review、diagnosing-bugs…），供 `read_skill` 读取 | 开源技能库，clone 到 `skills\skills\` 下 |
-
-> **三个都不装，路夜的基础功能照样能用**：对话、联网搜索、扫目录、读文件、写文件、读写 Word。
->
-> `skills\skills\` 下的技能属第三方，各自遵循其原有许可证（如 MIT），使用时请自行保留其 LICENSE。
-
----
-
-## 三、每个文件是干啥的
-
-| 文件 | 作用 |
-|---|---|
-| `desktop_bug.py` | 主程序：悬浮窗 + 聊天窗 + 多轮工具调用循环 |
-| `proactive.py` | 主动性引擎：随机搭话、环境感知、游戏结束提醒 |
-| `boot_greet.py` | 开机问候语生成（受每日上限控制） |
-| `nightly_organize.py` | 每晚自动归拢日程（可挂到计划任务，23:30 跑一次） |
-| `image_shape_demo.py` | 图片尺寸演示脚本 |
-| `install_setup.py` | 安装助手，由「装我.bat」调用（所有中文提示都在这里） |
-| `_auto_python.bat` | 找 / 装 Python，把解释器交回给调用方 |
-| `装我.bat` | 一键安装入口 |
-| `启动路夜.bat` | 启动入口，带依赖自检（pythonw 无控制台，失败会在这里报出来） |
-| `tools\run_bg.py` | 后台长任务管理器：下载 / 编译等耗时活儿走它，主界面不卡 |
-| `AGENTS.md` | 给 AI 助手看的工程规范与踩坑记录 |
-| `requirements.txt` | Python 依赖清单 |
-| `bug.gif` / `bug.png` | 悬浮窗形象素材 |
+```
+AI_Assistant\
+├─ 装我.bat              ← 先点这个（安装）
+├─ 启动路夜.bat           ← 再点这个（启动）
+├─ _auto_python.bat       ← 安装器内部调用，别单独点
+├─ install_setup.py       ← 安装逻辑（中文提示都在这儿）
+├─ desktop_bug.py         ← 主程序
+├─ proactive.py           ← 主动搭话
+├─ boot_greet.py          ← 开机问好（可选）
+├─ nightly_organize.py    ← 每晚整理日程（可选）
+├─ image_shape_demo.py    ← 演示脚本，和主程序无关
+├─ bug.gif / bug.png      ← 悬浮窗形象（删了会退化成纯文字）
+├─ requirements.txt
+├─ .env                   ← Key 填这里（占位符版）
+├─ AGENTS.md              ← 工程铁律与踩坑记录
+├─ CHANGELOG.md
+├─ LICENSE
+└─ tools\run_bg.py        ← 长任务后台执行器
+```
 
 ---
 
-## 四、隐私与安全
+## 这版改了什么
 
-- 仓库内**不含**任何 API Key、账号、用户名、本机绝对路径。
-- 所有对话记忆写在**你自己的电脑上**，不往任何服务器上传。
-- `run_command` 对危险命令（删除、改名、改注册表等）会弹确认框，**必须人工点「是」**才执行。
+见 [CHANGELOG.md](CHANGELOG.md)。
 
 ---
 
-## 五、许可证
+## 外部组件：本包不含，需要请自装
 
-代码版权归作者所有。
+路夜可以调用几类外部工具干重活，但它们体积大、授权各自独立，**没有打进本包**：
 
-仓库内**不附带**任何第三方组件（PPT Master / OfficeCLI / Skills），
-它们各自遵循自己的开源许可证，使用前请自行阅读。
+- **OfficeCLI** → https://github.com/iOfficeAI/OfficeCLI （Apache 2.0，单二进制，Windows x64）
+- **ppt-master** → https://github.com/hugohe3/ppt-master
+- **Skills 库**（TDD / code-review / diagnosing-bugs 等）→ `skills\skills\`
+
+想用就自己装好放到 `tools\`（或对应目录），并在 `desktop_bug.py` 的 `_RUN_ALLOW_FIRST` 白名单里登记可执行名，详见 `AGENTS.md`。
+
+**三个都不装也能用**：对话、联网搜索、扫目录、读文件、写文件、读写 Word 全部照常。
+
+### ⚠️ 关于 OfficeCLI 的一条硬规矩
+
+装完之后 **不要** 执行 `officecli install` / `officecli skills` / `officecli mcp register`——
+它们会往你机器上检测到的 AI 编程助手（Claude Code、Cursor、Copilot…）里塞技能文件、改接线。
+
+---
+
+## 里面不会有什么
+
+这个仓库 **不含** 任何个人数据：
+
+- `.env` 里的真实 Key（只有占位符）
+- `history.json`（聊天记忆）
+- `logs/`、`*_trace.log`（运行日志）
+- `.venv/`（虚拟环境）
+
+克隆下来是个干净的壳，得自己填 Key 才能聊天。
+
+---
+
+## 许可证
+
+本项目采用 **MIT License** 开源，完整条款见 [LICENSE](LICENSE)。
+
+简单说：你可以自由使用、修改、分发，甚至商用，只需保留版权声明和许可证声明。
+
+**第三方组件**（OfficeCLI / ppt-master / Skills 库）不随包分发，各自遵循其原有许可证
+（如 Apache 2.0 / AGPL 等），使用前请自行阅读。特别提醒：ppt-master 的依赖链里有
+**PyMuPDF（AGPL）**——自己机器上用没问题，别再打包分发出去。
