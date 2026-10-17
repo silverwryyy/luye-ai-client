@@ -11,7 +11,7 @@
 1. 双击 **`装我.bat`**
    - 电脑上没有 Python？它会自己帮你装一个（winget → 官方安装包，两级兜底）
    - 然后建 `.venv`、装依赖（走清华镜像）、检查 `.env`
-2. 用记事本打开 **`.env`**，把 `填自己申请的对应api` 换成你自己的 Key
+2. 用记事本打开 **`example.txt`**，把 `填自己申请的对应api` 换成你自己的 Key，并把文件名改为.env
    - DeepSeek：https://platform.deepseek.com/
    - Tavily：https://tavily.com/
 3. 双击 **`启动路夜.bat`**
