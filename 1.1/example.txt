@@ -1,4 +1,0 @@
-# 移植版占位配置：请填自己申请的对应 API Key
-# 申请地址：DeepSeek -> https://platform.deepseek.com/   Tavily -> https://tavily.com/
-DEEPSEEK_API_KEY=填自己申请的对应api
-TAVILY_API_KEY=填自己申请的对应api
