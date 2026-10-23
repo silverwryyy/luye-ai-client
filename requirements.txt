@@ -1,0 +1,22 @@
+# ============================================================
+#  路夜 (Luye) 运行依赖
+#  由 装我.bat / install_setup.py 自动安装
+#  手动安装： .venv\Scripts\python.exe -m pip install -r requirements.txt
+# ============================================================
+
+# ---------- 核心：缺一不可 ----------
+requests
+psutil
+python-dotenv
+openai
+winotify
+pillow
+python-docx
+
+# ---------- 可选：用到才装，默认不装 ----------
+# numpy          图像/数值实验（image_shape_demo.py 之类）
+# edge-tts       语音播报
+# python-pptx    PPT 生成工具链
+# openpyxl       Excel 读写
+# pymupdf        PDF 解析
+# mammoth        复杂 docx 转 html
