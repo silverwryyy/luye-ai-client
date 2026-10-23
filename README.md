@@ -33,7 +33,7 @@
      - DeepSeek（**必填**）：https://platform.deepseek.com/
      - Tavily（可选，联网搜索用）：https://tavily.com/
    - 必填的没填？安装会明确报错停下，不会假装「安装完成」
-2. （想手动填也可以）照 `.env.example` 复制一份 `.env`，自己填两行
+2. （想手动填也可以）照 `env.example` 复制一份 `.env`，自己填两行
 3. 双击 **`启动路夜.bat`**
 
 就这三步。启动脚本会先自检（虚拟环境在不在、依赖能不能 import、Key 填没填），有问题会在控制台里直说，不会只闪一下就没了。
